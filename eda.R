@@ -14,9 +14,32 @@ total_words <- book_words |>
   group_by(author) |>
   summarise(total_words = sum(n))
 
-#join together and add term frequency
+#join together
 book_words <- book_words |>
   left_join(total_words, by="author")
+
+#token-type ratio per author
+ttr_by_author <- book_words |>
+  group_by(author) |>
+  summarise(
+    total_tokens = sum(n), 
+    unique_types = n_distinct(word), #types = words
+    ttr = unique_types/total_tokens
+  )
+
+#fairly similar lexical variety, Sun Tzu is an outlier
+#plot ttr by author
+ttr_plot <- ttr_by_author |>
+  ggplot(aes(x = reorder(author, -ttr), y = ttr, fill = author)) +
+  geom_col(show.legend = FALSE) +
+  labs(
+    title = "Type-Token Ratio by Author",
+    x = "Author", 
+    y = "Type-Token Ratio"
+  ) 
+
+plot(ttr_plot)
+
 
 #add tf-idf
 books_tf_idf <- book_words |>
@@ -61,4 +84,8 @@ top_words_idf_plot <- top_words_idf |>
     x = NULL)
 
 print(top_words_idf_plot)
+
+# can already see differences between authors, especially those focused
+# on history versus those focused on tactics
+
 

@@ -10,14 +10,26 @@ df <- gutenberg_download(
   meta_fields = c("author","title")
 )
 
+author_map <- c(
+  "Sunzi, active 6th century B.C." = "Sun Tzu",
+  "Clausewitz, Carl von" = "Clausewitz",
+  "Thucydides" = "Thucydides",
+  "Caesar, Julius" = "Caesar",
+  "Mahan, A. T. (Alfred Thayer)" = "Mahan",
+  "Jomini, Antoine Henri, baron de" = "Jomini",
+  "Arrian" = "Arrian"  # Not part of your project
+)
+
 #clean text
 df_clean <- df |>
   mutate(
     text = trimws(text),
     text = str_to_lower(text), 
     text = str_replace_all(text, "[[:punct:]]", ""),
-    text = str_replace_all(text, "[[:digit:]]", "")
-  )
+    text = str_replace_all(text, "[[:digit:]]", ""),
+    author = recode(author, !!!author_map)
+  ) 
+  
 
 #tokenize into words
 tokens_words <- df_clean |>
