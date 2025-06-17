@@ -12,7 +12,7 @@ book_dtm <- books %>% group_by(author, chapter) %>%
   mutate(book_chapter = paste(author, chapter, sep="_")) %>%
   cast_dtm(book_chapter, word, n)
 
-trials <- 20
+trials <- 10
 mismatch <-
   tibble(chapter = character(),
          topic = numeric(),
